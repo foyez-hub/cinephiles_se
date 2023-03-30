@@ -25,7 +25,6 @@ then .env database name setup. if not set
 
 php artisan make:migration create_login_table
 
-
  5. then this migration function ar bitor table declare column declare korbo
 up function ar bitor like:
 
@@ -38,11 +37,14 @@ up function ar bitor like:
             $table->string('accountType');
             $table->string('password');
             $table->timestamps();
+
+           
         });
     }
 
 
 then run command: php artisan migrate
+php artisan migrate --path=/database/migrations/2023_03_30_112037_create_movieinfos_table.php
 
 6. then create php seeder 
 
@@ -98,3 +100,4 @@ function userLogin(Request $req){
 
 
      }
+   

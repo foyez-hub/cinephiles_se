@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\logincontroller;
+use App\Http\Controllers\moviecontroller;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,21 +15,17 @@ use App\Http\Controllers\logincontroller;
 |
 */
 
-// Route::get('/', function () {
-//     return view('login');
-// });
 
 
 Route::get('/sign-up', function () {
     return view('sign-up');
 });
-Route::get('/homepage', function () {
-    return view('homepage');
-});
+
 
 Route::get('/', function () {
     return view('login');
 });
 
 Route::post('/loginAction', [logincontroller::class, 'loginAction']);
+Route::get('/homepage', [moviecontroller::class, 'index']);
 
