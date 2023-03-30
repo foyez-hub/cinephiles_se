@@ -12,12 +12,14 @@
                <div class="sign-in-page-data">
                   <div class="sign-in-from w-100 m-auto">
                      <h3 class="mb-3 text-center">Sign in</h3>
-                     <form class="mt-4" action="index.html">
+                     <form class="mt-4" action="loginAction" method="POST">
+                     @csrf
+
                         <div class="form-group">                                 
-                           <input type="email" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter email" autocomplete="off" required>
+                           <input type="email" class="form-control mb-0" id="exampleInputEmail1" name="email" placeholder="Enter email" autocomplete="off" required>
                         </div>
                         <div class="form-group">                                 
-                           <input type="password" class="form-control mb-0" id="exampleInputPassword2" placeholder="Password" required>
+                           <input type="password" class="form-control mb-0" id="exampleInputPassword2" name="password" placeholder="Password" required>
                         </div>
                         
                            <div class="sign-info">
@@ -45,24 +47,6 @@
    </div>
 </section>
 <!-- MainContent End-->
-
-<!-- back-to-top End -->
-<!-- jQuery, Popper JS -->
-<script src="js/jquery-3.4.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="js/bootstrap.min.js"></script>
-<!-- Slick JS -->
-<script src="js/slick.min.js"></script>
-<!-- owl carousel Js -->
-<script src="js/owl.carousel.min.js"></script>
-<!-- select2 Js -->
-<script src="js/select2.min.js"></script>
-<!-- Magnific Popup-->
-<script src="js/jquery.magnific-popup.min.js"></script>
-<!-- Slick Animation-->
-<script src="js/slick-animation.min.js"></script>
-<!-- Custom JS-->
-<script src="js/custom.js"></script>
+@extends ('footer')
 </body>
 </html>

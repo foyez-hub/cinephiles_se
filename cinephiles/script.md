@@ -23,7 +23,7 @@ then .env database name setup. if not set
 
  php artisan make:migration create_users_table--- here this create and table is syntax and users is table name
 
-
+php artisan make:migration create_login_table
 
 
  5. then this migration function ar bitor table declare column declare korbo
@@ -78,5 +78,23 @@ then insert data in run function like
 
 then   
 command: php artisan db:seed --class UserSeeder   
-
+php artisan db:seed --class loginseeder
 here UserSeeder is my database seeder name
+
+
+5.Route::get('/login', [UserController::class, 'login']);
+UserController -> controller name
+login->fuction name;
+
+6.
+function userLogin(Request $req){
+    
+        $data = $req->input("username");//this user for form name=user
+        echo $req->session()->put("user",$data);
+        echo $data;
+        echo session("user");
+        return redirect("profile");
+
+
+
+     }
