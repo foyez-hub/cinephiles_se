@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\memeinfo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class MemeController extends Controller
 {
@@ -12,8 +13,41 @@ class MemeController extends Controller
 
     function allData()
     {
-        $allmemes = memeinfo::all();
-        return response()->json($allmemes);
+
+
+        $allmemes = DB::table('memeinfos')->orderBy('Time', 'desc')->get();
+        $winner = DB::table('winners')->orderBy('date', 'desc')->first();
+
+
+        $names = [];
+        $index = 0;
+        foreach ($allmemes as $meme) {
+
+            $row = DB::table('users')
+                ->where('email', $meme->email)
+                ->select('*')
+                ->first();
+
+            if ($row) {
+
+                $names[$index] = $row->name;
+                $index++;
+            }
+        }
+
+
+
+        $data = [];
+        $data[0] = $allmemes;
+        if ($winner) {
+            $data[2] = $winner;
+        }
+
+
+        $data[1] = $names;
+
+
+        return response()->json($data);
     }
 
     function memestore(Request $request)
@@ -30,7 +64,7 @@ class MemeController extends Controller
             'PostLike' => 0,
             'memetitle' => $memetitle,
             'Time' => now(),
-            'email' => 'foyez@emam.com',
+            'email' => session('email'),
             'isvote' => 0
         ]);
 
@@ -42,7 +76,7 @@ class MemeController extends Controller
     function vote($time)
     {
 
-        $myemail = "foyez@emam.com";
+        $myemail = session('email');
 
         $row = DB::table('memeinfos')
             ->where('Time', $time)
@@ -86,9 +120,9 @@ class MemeController extends Controller
     function ckvote($time)
     {
 
-        $myemail = "foyez@emam.com";
+        $myemail = session('email');
 
-     
+
 
         $votetracking = DB::table('votetracking')
             ->where('time', $time)
@@ -96,14 +130,100 @@ class MemeController extends Controller
             ->select('*')
             ->first();
 
-            if ($votetracking) {
+        if ($votetracking) {
 
-                return response()->json(['status' => 'Downvote']);
+            return response()->json(['status' => '<i class="fa fa-thumbs-down"></i>']);
+        } else {
 
+            return response()->json(['status' => '<i class="fa fa-thumbs-up"></i>']);
+        }
+    }
+
+    function topmeme()
+    {
+
+        $allmemes = memeinfo::all();
+        if ($allmemes) {
+
+            $mm = -1;
+            $ans = [];
+            foreach ($allmemes as $meme) {
+
+                if ($meme->PostLike > $mm) {
+                    $mm = $meme->PostLike;
+                    $ans = $meme;
+                }
+            }
+
+            if ($mm != -1) {
+                return response()->json($ans);
             }
             else{
+                return response()->json("not OK");
 
-                return response()->json(['status' => 'Upvote']);
             }
+        }
+    }
+
+    function gettime()
+    {
+
+        $contesttime = DB::table('contesttime')->get();
+
+        // $data['h']=$contesttime->h;
+        // $data['m']=$contesttime->m;
+        // $data['s']=$contesttime->s;
+
+        return response()->json($contesttime);
+    }
+
+    function Endcontest()
+    {
+
+        $allmemes = memeinfo::all();
+
+        if ($allmemes) {
+
+            $mm = -1;
+            $ans=[];
+
+            foreach ($allmemes as $meme) {
+
+                if ($meme->PostLike > $mm) {
+                    $mm = $meme->PostLike;
+                    $ans = $meme;
+                }
+            }
+
+            if ($mm!=-1) {
+
+                $winner = $ans->email;
+                $memeimg = $ans->PostImg;
+
+                $row = DB::table('users')
+                    ->where('email', $winner)
+                    ->select('*')
+                    ->first();
+
+                if ($row) {
+
+                    $winnername = $row->name;
+
+                    DB::table('winners')->insert([
+                        'name' => $winnername,
+                        'memeimg' => $memeimg,
+
+                    ]);
+                }
+            }
+
+            DB::table('memeinfos')->delete();
+        }
+
+
+
+
+
+        return response()->json("OK");
     }
 }

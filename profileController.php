@@ -614,4 +614,30 @@ class profileController extends Controller
 
         return response()->json("OKK");
     }
+
+    function addrecent(Request $request)
+    {
+        $myemail = session('email');
+
+        $myinfo = DB::table('users')
+            ->where('email', $myemail)
+            ->select('*')
+            ->first();
+ 
+
+        $myinfo = $myinfo->recent;
+        
+        if(!$this->isthere( $myinfo,$request->input('moviename'))){  
+        $myinfo .= $request->input('moviename') . ',';
+
+        DB::table('users')
+            ->where('email', $myemail)
+            ->update([
+                'recent' => $myinfo
+            ]);
+
+        }
+
+        return response()->json("OKK");
+    }
 }
